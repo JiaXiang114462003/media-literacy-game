@@ -1,3 +1,9 @@
+# 開啟專案
+
+Clone 專案: git clone https://github.com/JiaXiang114462003/media-literacy-game.git
+安裝依賴: npm install 
+啟動專案: npm run dev
+
 # React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
