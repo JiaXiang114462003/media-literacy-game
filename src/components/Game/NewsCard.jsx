@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import user from "../../assets/user.png";
 import verify from "../../assets/verify.png";
 import close from "../../assets/close.png";
@@ -22,6 +22,8 @@ export default function NewsCard({
   handleVerifyCard,
   handleShareCard,
 }) {
+  const [isHovered, setIsHovered] = useState(false);
+
   return (
     <div
       className="news-card"
@@ -50,7 +52,10 @@ export default function NewsCard({
         pointerEvents: news.status === CARD_STATUS.disabled ? "none" : "auto",
         cursor: news.status === CARD_STATUS.disabled ? "default" : "pointer",
         transform: `rotate(${rotation}deg)`,
+        zIndex: isHovered ? 1000 : 1,
       }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
       <div
         style={{
