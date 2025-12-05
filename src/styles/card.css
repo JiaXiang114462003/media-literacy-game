@@ -1,0 +1,52 @@
+.share-btn {
+  transition: all 0.3s ease;
+  background-color: #2461e6;
+  cursor: pointer;
+  &:hover {
+    background-color: #1545b0;
+  }
+}
+
+.share-btn.disabled {
+  background-color: #9cafd9;
+  cursor: default;
+}
+.verify-btn {
+  transition: all 0.3s ease;
+  background-color: #fff;
+  outline: 1px solid #d6d6d6;
+  color: #464646;
+  &:hover {
+    background-color: #e3e3e3;
+    cursor: pointer;
+  }
+}
+.verify-btn.disabled {
+  background-color: #e3e3e3;
+  cursor: default;
+  outline: 1px solid #e3e3e3;
+}
+
+@keyframes loading {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-btn {
+  animation: loading 1s linear infinite;
+}
+
+/* 新聞卡片主容器 - 狀態切換 transition */
+.news-card {
+  transition: border 0.4s ease, box-shadow 0.4s ease, filter 0.4s ease;
+  background-color: #fff;
+}
+
+/* 狀態標籤 transition */
+.status-badge {
+  transition: background-color 0.4s ease, opacity 0.3s ease, transform 0.3s ease;
+}
