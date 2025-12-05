@@ -5,19 +5,30 @@ import close from "../../assets/close.png";
 import loading from "../../assets/loading.png";
 import share from "../../assets/share.png";
 import "../../styles/card.css";
-import { CARD_STATUS, useCard } from "../../hooks/useCard";
-import { NEWS_DATABASE } from "../../data/newsDatabase";
+import { CARD_STATUS } from "../../data/newsDatabase";
 /**
  * 新聞卡片元件
  * 用於顯示漂浮的新聞卡片 (Feed item)
+ * @param {Object} news - 新聞資料物件
+ * @param {number} top - 距離頂部的距離（px）
+ * @param {number} left - 距離左側的距離（px）
+ * @param {number} rotation - 旋轉角度（度，-15 到 15）
  */
-export default function NewsCard() {
-  const news = NEWS_DATABASE[1];
-  const { title, description, status, verifyCard } = useCard(news);
+export default function NewsCard({
+  news,
+  top = 0,
+  left = 0,
+  rotation = 0,
+  handleVerifyCard,
+  handleShareCard,
+}) {
   return (
     <div
       className="news-card"
       style={{
+        position: "absolute",
+        top: `${top}px`,
+        left: `${left}px`,
         width: "442px",
         height: "212px",
         padding: "20px",
@@ -26,18 +37,19 @@ export default function NewsCard() {
         gap: "28px",
         borderRadius: "10px",
         border:
-          status === CARD_STATUS.true
+          news.isVerified && news.isReal
             ? "4px solid #23C25F"
-            : status === CARD_STATUS.false
+            : news.isVerified && !news.isReal
             ? "4px solid #D83232"
             : "4px solid transparent",
         boxShadow:
-          status === CARD_STATUS.verifying
+          news.status === CARD_STATUS.verifying
             ? "0px 0px 20px 0px #FFD865"
             : "none",
-        filter: status === CARD_STATUS.disabled ? "blur(1.5px)" : "none",
-        pointerEvents: status === CARD_STATUS.disabled ? "none" : "auto",
-        cursor: status === CARD_STATUS.disabled ? "default" : "pointer",
+        filter: news.status === CARD_STATUS.disabled ? "blur(1.5px)" : "none",
+        pointerEvents: news.status === CARD_STATUS.disabled ? "none" : "auto",
+        cursor: news.status === CARD_STATUS.disabled ? "default" : "pointer",
+        transform: `rotate(${rotation}deg)`,
       }}
     >
       <div
@@ -71,7 +83,7 @@ export default function NewsCard() {
                 lineHeight: "150%",
               }}
             >
-              {title}
+              {news.title}
             </div>
             <div
               style={{
@@ -90,32 +102,26 @@ export default function NewsCard() {
           <div
             className="status-badge"
             style={{
-              display: status !== CARD_STATUS.default ? "block" : "none",
+              display: news.isVerified ? "block" : "none",
               padding: "4px 16px",
               borderRadius: "100px",
-              backgroundColor:
-                status === CARD_STATUS.true
-                  ? "#23C25F"
-                  : status === CARD_STATUS.false
-                  ? "#D83232"
-                  : "transparent",
+              backgroundColor: news.isReal ? "#23C25F" : "#D83232",
               color: "#fff",
               fontSize: "14px",
               fontWeight: "600",
               lineHeight: "150%",
-              opacity: status !== CARD_STATUS.default ? 1 : 0,
-              transform:
-                status !== CARD_STATUS.default ? "scale(1)" : "scale(0.8)",
             }}
           >
-            {status === CARD_STATUS.true ? "TRUE" : "FALSE"}
+            {news.isReal ? "TRUE" : "FALSE"}
           </div>
         </div>
       </div>
 
-      <div style={{ fontSize: "16px", lineHeight: "150%" }}>{description}</div>
+      <div style={{ fontSize: "16px", lineHeight: "150%" }}>
+        {news.description}
+      </div>
 
-      {status !== CARD_STATUS.false && (
+      {!(news.isVerified && !news.isReal) && (
         <div
           style={{
             display: "flex",
@@ -125,11 +131,16 @@ export default function NewsCard() {
         >
           <div
             className={`share-btn ${
-              status === CARD_STATUS.verifying ? "disabled" : ""
+              news.status === CARD_STATUS.verifying ||
+              (news.isVerified && !news.isReal)
+                ? "disabled"
+                : ""
             }`}
             style={{
-              flexGrow: 1,
-              padding: "4px 72px",
+              maxWidth: "197px",
+              paddingTop: "4px",
+              paddingBottom: "4px",
+              width: "100%",
 
               color: "#fff",
               fontSize: "14px",
@@ -143,10 +154,11 @@ export default function NewsCard() {
             }}
             onClick={() => {
               if (
-                status === CARD_STATUS.default ||
-                status === CARD_STATUS.true
+                news.status === CARD_STATUS.default ||
+                (news.isVerified && news.isReal)
               ) {
                 //todo: share logic
+                handleShareCard(news);
               }
             }}
           >
@@ -155,11 +167,13 @@ export default function NewsCard() {
           </div>
           <div
             className={`verify-btn ${
-              status === CARD_STATUS.verifying ? "disabled" : ""
+              news.status === CARD_STATUS.verifying ? "disabled" : ""
             }`}
             style={{
-              flexGrow: 1,
-              padding: "4px 72px",
+              maxWidth: "197px",
+              width: "100%",
+              paddingTop: "4px",
+              paddingBottom: "4px",
               fontSize: "14px",
               borderRadius: "5px",
               lineHeight: "150%",
@@ -170,26 +184,30 @@ export default function NewsCard() {
               gap: "4px",
             }}
             onClick={() => {
-              if (status === CARD_STATUS.default) {
-                verifyCard();
-              }
+              handleVerifyCard(news);
             }}
           >
-            {status === CARD_STATUS.default ? (
+            {!news.isVerified &&
+            (news.status === CARD_STATUS.default ||
+              news.status === CARD_STATUS.disabled) ? (
               <img src={verify} alt="verify" />
             ) : null}
-            {status === CARD_STATUS.verifying ? (
+            {news.status === CARD_STATUS.verifying ? (
               <img className="loading-btn" src={loading} alt="loading" />
             ) : null}
-            {status === CARD_STATUS.false ? (
+            {news.isVerified && news.isReal ? (
               <img src={close} alt="close" />
             ) : null}
-            <div>
-              {status === CARD_STATUS.default
-                ? "查證"
-                : status === CARD_STATUS.verifying
-                ? "查證中"
-                : "忽略"}
+            <div
+              onClick={() => {
+                handleVerifyCard(news);
+              }}
+            >
+              {news.isVerified && (news.isReal ? "忽略" : "忽略")}
+              {news.status === CARD_STATUS.verifying && "查證中"}
+              {(news.status === CARD_STATUS.default ||
+                news.status === CARD_STATUS.disabled) &&
+                "查證"}
             </div>
           </div>
         </div>
