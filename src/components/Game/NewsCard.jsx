@@ -284,7 +284,10 @@ export default function NewsCard({
                     fontWeight: "600",
                     lineHeight: "150%",
                   }}
-                  onClick={() => setSelectedTitleIndex(index)}
+                  onClick={() => {
+                    setSelectedTitleIndex(index);
+                    handleShareCard(news, index);
+                  }}
                 >
                   {title.name}
                 </div>
