@@ -23,200 +23,303 @@ export default function NewsCard({
   handleShareCard,
 }) {
   const [isHovered, setIsHovered] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedTitleIndex, setSelectedTitleIndex] = useState(null);
 
   return (
-    <div
-      className="news-card"
-      style={{
-        position: "absolute",
-        top: `${top}px`,
-        left: `${left}px`,
-        width: "442px",
-        height: "212px",
-        padding: "20px",
-        display: "flex",
-        flexDirection: "column",
-        gap: "28px",
-        borderRadius: "10px",
-        border:
-          news.isVerified && news.isReal
-            ? "4px solid #23C25F"
-            : news.isVerified && !news.isReal
-            ? "4px solid #D83232"
-            : "4px solid transparent",
-        boxShadow:
-          news.status === CARD_STATUS.verifying
-            ? "0px 0px 20px 0px #FFD865"
-            : "none",
-        filter: news.status === CARD_STATUS.disabled ? "blur(1.5px)" : "none",
-        pointerEvents: news.status === CARD_STATUS.disabled ? "none" : "auto",
-        cursor: news.status === CARD_STATUS.disabled ? "default" : "pointer",
-        transform: `rotate(${rotation}deg)`,
-        zIndex: isHovered ? 1000 : 1,
-      }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
+    <>
       <div
+        className="news-card"
         style={{
+          position: "absolute",
+          top: `${top}px`,
+          left: `${left}px`,
+          width: "442px",
+          height: "212px",
+          padding: "20px",
           display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
+          flexDirection: "column",
+          gap: "28px",
+          borderRadius: "10px",
+          border:
+            news.isVerified && news.isReal
+              ? "4px solid #23C25F"
+              : news.isVerified && !news.isReal
+              ? "4px solid #D83232"
+              : "4px solid transparent",
+          boxShadow:
+            news.status === CARD_STATUS.verifying
+              ? "0px 0px 20px 0px #FFD865"
+              : "none",
+          filter: news.status === CARD_STATUS.disabled ? "blur(1.5px)" : "none",
+          pointerEvents: news.status === CARD_STATUS.disabled ? "none" : "auto",
+          cursor: news.status === CARD_STATUS.disabled ? "default" : "pointer",
+          transform: `rotate(${rotation}deg)`,
+          zIndex: isHovered ? 1000 : 1,
         }}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
       >
         <div
           style={{
             display: "flex",
-            gap: "16px",
-            justifyContent: "start",
+            justifyContent: "space-between",
             alignItems: "center",
           }}
         >
-          <div style={{ width: "33.33px", height: "33.33px" }}>
-            <img src={user} alt="user" />
-          </div>
           <div
             style={{
               display: "flex",
-              flexDirection: "column",
+              gap: "16px",
+              justifyContent: "start",
+              alignItems: "center",
             }}
           >
-            <div
-              style={{
-                fontSize: "14px",
-                fontWeight: "400",
-                lineHeight: "150%",
-              }}
-            >
-              {news.title}
+            <div style={{ width: "33.33px", height: "33.33px" }}>
+              <img src={user} alt="user" />
             </div>
             <div
               style={{
-                fontSize: "14px",
-                fontWeight: "400",
-                lineHeight: "150%",
-                color: "#B0B0B0",
+                display: "flex",
+                flexDirection: "column",
               }}
             >
-              {new Date().toLocaleTimeString()}
+              <div
+                style={{
+                  fontSize: "14px",
+                  fontWeight: "400",
+                  lineHeight: "150%",
+                }}
+              >
+                {news.title}
+              </div>
+              <div
+                style={{
+                  fontSize: "14px",
+                  fontWeight: "400",
+                  lineHeight: "150%",
+                  color: "#B0B0B0",
+                }}
+              >
+                {new Date().toLocaleTimeString()}
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div
+              className="status-badge"
+              style={{
+                display: news.isVerified ? "block" : "none",
+                padding: "4px 16px",
+                borderRadius: "100px",
+                backgroundColor: news.isReal ? "#23C25F" : "#D83232",
+                color: "#fff",
+                fontSize: "14px",
+                fontWeight: "600",
+                lineHeight: "150%",
+              }}
+            >
+              {news.isReal ? "TRUE" : "FALSE"}
             </div>
           </div>
         </div>
 
-        <div>
-          <div
-            className="status-badge"
-            style={{
-              display: news.isVerified ? "block" : "none",
-              padding: "4px 16px",
-              borderRadius: "100px",
-              backgroundColor: news.isReal ? "#23C25F" : "#D83232",
-              color: "#fff",
-              fontSize: "14px",
-              fontWeight: "600",
-              lineHeight: "150%",
-            }}
-          >
-            {news.isReal ? "TRUE" : "FALSE"}
-          </div>
+        <div style={{ fontSize: "16px", lineHeight: "150%" }}>
+          {news.description}
         </div>
-      </div>
 
-      <div style={{ fontSize: "16px", lineHeight: "150%" }}>
-        {news.description}
-      </div>
-
-      {!(news.isVerified && !news.isReal) && (
-        <div
-          style={{
-            display: "flex",
-            gap: "8px",
-            justifyContent: "center",
-          }}
-        >
+        {!(news.isVerified && !news.isReal) && (
           <div
-            className={`share-btn ${
-              news.status === CARD_STATUS.verifying ||
-              (news.isVerified && !news.isReal)
-                ? "disabled"
-                : ""
-            }`}
             style={{
-              maxWidth: "197px",
-              paddingTop: "4px",
-              paddingBottom: "4px",
-              width: "100%",
-
-              color: "#fff",
-              fontSize: "14px",
-              borderRadius: "5px",
-              lineHeight: "150%",
-              textAlign: "center",
               display: "flex",
-              alignItems: "center",
+              gap: "8px",
               justifyContent: "center",
-              gap: "4px",
-            }}
-            onClick={() => {
-              if (
-                news.status === CARD_STATUS.default ||
-                (news.isVerified && news.isReal)
-              ) {
-                //todo: share logic
-                handleShareCard(news);
-              }
             }}
           >
-            <img src={share} alt="share" />
-            <div>分享</div>
-          </div>
-          <div
-            className={`verify-btn ${
-              news.status === CARD_STATUS.verifying ? "disabled" : ""
-            }`}
-            style={{
-              maxWidth: "197px",
-              width: "100%",
-              paddingTop: "4px",
-              paddingBottom: "4px",
-              fontSize: "14px",
-              borderRadius: "5px",
-              lineHeight: "150%",
-              textAlign: "center",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "4px",
-            }}
-            onClick={() => {
-              handleVerifyCard(news);
-            }}
-          >
-            {!news.isVerified &&
-            (news.status === CARD_STATUS.default ||
-              news.status === CARD_STATUS.disabled) ? (
-              <img src={verify} alt="verify" />
-            ) : null}
-            {news.status === CARD_STATUS.verifying ? (
-              <img className="loading-btn" src={loading} alt="loading" />
-            ) : null}
-            {news.isVerified && news.isReal ? (
-              <img src={close} alt="close" />
-            ) : null}
             <div
+              className={`share-btn ${
+                news.status === CARD_STATUS.verifying ||
+                (news.isVerified && !news.isReal)
+                  ? "disabled"
+                  : ""
+              }`}
+              style={{
+                maxWidth: "197px",
+                paddingTop: "4px",
+                paddingBottom: "4px",
+                width: "100%",
+
+                color: "#fff",
+                fontSize: "14px",
+                borderRadius: "5px",
+                lineHeight: "150%",
+                textAlign: "center",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "4px",
+              }}
+              onClick={() => {
+                if (
+                  news.status === CARD_STATUS.default ||
+                  (news.isVerified && news.isReal)
+                ) {
+                  setIsOpen(true);
+                  setSelectedTitleIndex(null);
+                }
+              }}
+            >
+              <img src={share} alt="share" />
+              <div>分享</div>
+            </div>
+            <div
+              className={`verify-btn ${
+                news.status === CARD_STATUS.verifying ? "disabled" : ""
+              }`}
+              style={{
+                maxWidth: "197px",
+                width: "100%",
+                paddingTop: "4px",
+                paddingBottom: "4px",
+                fontSize: "14px",
+                borderRadius: "5px",
+                lineHeight: "150%",
+                textAlign: "center",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "4px",
+              }}
               onClick={() => {
                 handleVerifyCard(news);
               }}
             >
-              {news.isVerified && (news.isReal ? "忽略" : "忽略")}
-              {news.status === CARD_STATUS.verifying && "查證中"}
-              {(news.status === CARD_STATUS.default ||
-                news.status === CARD_STATUS.disabled) &&
-                "查證"}
+              {!news.isVerified &&
+              (news.status === CARD_STATUS.default ||
+                news.status === CARD_STATUS.disabled) ? (
+                <img src={verify} alt="verify" />
+              ) : null}
+              {news.status === CARD_STATUS.verifying ? (
+                <img className="loading-btn" src={loading} alt="loading" />
+              ) : null}
+              {news.isVerified && news.isReal ? (
+                <img src={close} alt="close" />
+              ) : null}
+              <div
+                onClick={() => {
+                  handleVerifyCard(news);
+                }}
+              >
+                {news.isVerified && (news.isReal ? "忽略" : "忽略")}
+                {news.status === CARD_STATUS.verifying && "查證中"}
+                {(news.status === CARD_STATUS.default ||
+                  news.status === CARD_STATUS.disabled) &&
+                  "查證"}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+      {isOpen && (
+        <div
+          className="news-card-modal"
+          style={{
+            position: "absolute",
+
+            zIndex: 1000,
+            width: "100%",
+            height: "100%",
+            backgroundColor: "rgba(0, 0, 0, 0.9)",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              flexDirection: "column",
+              width: "808px",
+              height: "370px",
+            }}
+          >
+            <div
+              style={{
+                paddingLeft: "16px",
+                paddingTop: "18.5px",
+                paddingBottom: "18.5px",
+                borderRadius: "16px 16px 0 0",
+                backgroundColor: "#F4F4F4",
+                fontSize: "16px",
+                fontWeight: "600",
+                lineHeight: "150%",
+              }}
+            >
+              請選擇發佈標題
+            </div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                backgroundColor: "white",
+                alignItems: "center",
+                gap: "16px",
+                padding: "24px 16px",
+              }}
+            >
+              {news.titles.map((title, index) => (
+                <div
+                  key={index}
+                  className={`modal-btn ${
+                    selectedTitleIndex === index ? "selected" : ""
+                  }`}
+                  style={{
+                    width: "100%",
+                    padding: "15.5px 16px",
+                    borderRadius: "5px",
+                    cursor: "pointer",
+                    fontSize: "16px",
+                    fontWeight: "600",
+                    lineHeight: "150%",
+                  }}
+                  onClick={() => setSelectedTitleIndex(index)}
+                >
+                  {title.name}
+                </div>
+              ))}
+            </div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              <div
+                className="cancel-btn"
+                style={{
+                  borderRadius: "0 0 16px 16px",
+                  backgroundColor: "#F4F4F4",
+                  width: "100%",
+                  textAlign: "center",
+                  padding: "20px 0",
+                  cursor: "pointer",
+                  fontSize: "18px",
+                  fontWeight: "600",
+                  lineHeight: "150%",
+                }}
+                onClick={() => {
+                  setIsOpen(false);
+                  setSelectedTitleIndex(null);
+                }}
+              >
+                放棄發佈
+              </div>
             </div>
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }

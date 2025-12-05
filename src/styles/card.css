@@ -50,3 +50,33 @@
 .status-badge {
   transition: background-color 0.4s ease, opacity 0.3s ease, transform 0.3s ease;
 }
+
+.modal-btn {
+  transition: all 0.3s ease;
+  border: 2px solid #f4f4f4;
+  color: black;
+  &:hover {
+    border: 2px solid #255eda;
+    color: #255eda;
+  }
+  &.selected {
+    background-color: #255eda;
+    color: white;
+    border: 2px solid #255eda;
+  }
+}
+
+.cancel-btn {
+  transition: all 0.3s ease;
+  background-color: #f4f4f4;
+  color: #8d8d8d;
+  &:hover {
+    background-color: #e8e5e5;
+    color: #737373;
+    cursor: pointer;
+  }
+  &:active {
+    background-color: #b7b7b7;
+    color: #464646;
+  }
+}
