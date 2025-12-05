@@ -29,7 +29,7 @@ export function useCardsGame(started = true) {
         });
       });
 
-      //3秒後，將欲查證的卡片狀態設為 true 或 false，其他卡片狀態設為 default
+      //5秒後，將欲查證的卡片狀態設為 true 或 false，其他卡片狀態設為 default
       setTimeout(() => {
         setVerifyingCard(false);
         setNewsCards((prev) => {
@@ -47,7 +47,7 @@ export function useCardsGame(started = true) {
             };
           });
         });
-      }, 3000);
+      }, 5000);
     }
     if (news.isVerified && news.isReal) {
       setNewsCards((prev) => prev.filter((card) => card.id !== news.id));
