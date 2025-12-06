@@ -1,0 +1,74 @@
+.game-screen {
+	min-height: 100vh;
+	background: #0b1220;
+	position: relative;
+	color: #fff;
+	font-family: Inter, Arial, sans-serif;
+}
+
+.countdown {
+	position: fixed;
+	right: 28px;
+	bottom: 28px;
+	width: 84px;
+	height: 84px;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: rgba(255, 255, 255, 0.04);
+	border: 6px solid rgba(255, 255, 255, 0.12);
+	color: #e6f0ff;
+	font-weight: 700;
+}
+
+.countdown .time {
+	background: radial-gradient(
+		circle at 30% 30%,
+		rgba(255, 255, 255, 0.06),
+		rgba(255, 255, 255, 0)
+	);
+	width: 64px;
+	height: 64px;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.center-card {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	background: #fff;
+	border-radius: 10px;
+	padding: 22px;
+	min-width: 420px;
+	box-shadow: 0 8px 24px rgba(2, 6, 23, 0.6);
+	color: #111827;
+}
+
+.center-card .actions {
+	display: flex;
+	gap: 12px;
+	margin-top: 16px;
+}
+
+.center-card button.primary {
+	flex: 1;
+	background: #1d4ed8;
+	color: #fff;
+	padding: 10px 12px;
+	border-radius: 6px;
+	border: none;
+}
+
+.center-card button.secondary {
+	flex: 1;
+	background: #fff;
+	color: #111827;
+	padding: 10px 12px;
+	border-radius: 6px;
+	border: 1px solid #e5e7eb;
+}

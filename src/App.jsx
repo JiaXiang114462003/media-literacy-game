@@ -1,35 +1,48 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from 'react';
+import GameScreen from './components/Screens/GameScreen/GameScreen';
+import ResultScreen from './components/Screens/ResultScreen/ResultScreen';
 
 function App() {
-  const [count, setCount] = useState(0)
+	// 初始 trust 值（可改成 props 或常數來源）
+	const initialTrust = 50;
+	const [screen, setScreen] = useState('game');
+	const [trust, setTrust] = useState(initialTrust);
+	const [round, setRound] = useState(1);
+	return (
+		<>
+			{screen === 'game' && (
+				<GameScreen
+					round={round}
+					initialTrust={trust}
+					initialTime={10}
+					onTimeUp={(finalTrust) => {
+						// 存下遊戲結束時的 trust 值，確保 ResultScreen 顯示一致
+						setTrust(typeof finalTrust === 'number' ? finalTrust : trust);
+						setScreen('result');
+					}}
+				/>
+			)}
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+			{screen === 'result' && (
+				<ResultScreen
+					round={round}
+					trust={trust}
+					onNext={() => {
+						// 按下結果頁的按鈕：若目前回合小於 2，進入下一回合；否則重開回合 1
+						if (round < 2) {
+							setRound((r) => r + 1);
+							setScreen('game');
+						} else {
+							// 重開遊戲
+							setRound(1);
+							setTrust(initialTrust);
+							setScreen('game');
+						}
+					}}
+				/>
+			)}
+		</>
+	);
 }
 
-export default App
+export default App;

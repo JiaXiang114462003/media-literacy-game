@@ -1,0 +1,113 @@
+.layout-root {
+	position: relative;
+	/* background-color: #0b1220; */
+}
+
+/* Force consistent base font for layout (prevents parent/page overrides) */
+.layout-root {
+	font-family: Inter, Arial, sans-serif;
+}
+
+.layout-topbar {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 14px 20px;
+	color: #fff;
+}
+
+.left-title {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	font-weight: 700;
+}
+
+/* 確保 media title 在所有畫面一致 */
+.media-title {
+	font-family: Inter, Arial, sans-serif;
+	font-size: 16px;
+	font-weight: 700;
+	color: #ffffff;
+	line-height: 1;
+}
+
+.media-icon img {
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+}
+
+.media-icon {
+	width: 34px;
+	height: 34px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.round-label {
+	position: absolute;
+	left: 50%;
+	transform: translateX(-50%);
+	top: 25px;
+	color: #fff;
+	font-weight: 700;
+	letter-spacing: 2px;
+}
+
+/* Make ROUND label rendering deterministic across screens */
+.layout-topbar .round-label {
+	font-family: Inter, Arial, sans-serif;
+	font-size: 18px;
+	font-weight: 700;
+	line-height: 1;
+	letter-spacing: 2px;
+	text-transform: uppercase;
+	color: #ffffff;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+.bar-wrap {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	gap: 8px;
+}
+
+.bar-labels {
+	display: flex;
+	width: 320px;
+	justify-content: space-between;
+	align-items: center;
+	color: #e6eefc;
+	font-size: 12px;
+}
+
+/* 確保數字與百分比在各畫面中完全一致呈現 */
+.bar-labels > div {
+	font-family: Inter, Arial, sans-serif;
+	font-size: 12px;
+	font-weight: 600;
+	line-height: 1;
+	letter-spacing: 0;
+	/* 使用等寬數字字形（tabular numbers）避免數字寬度在不同環境跳動 */
+	-webkit-font-feature-settings: 'tnum' 1;
+	-moz-font-feature-settings: 'tnum' 1;
+	font-variant-numeric: tabular-nums;
+}
+
+.bar {
+	width: 320px;
+	height: 14px;
+	border-radius: 12px;
+	position: relative;
+	overflow: hidden;
+	box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.25);
+}
+
+.layout-content {
+	/* 讓內容（NewsCard）置中 */
+	position: relative;
+}
