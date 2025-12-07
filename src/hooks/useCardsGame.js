@@ -5,7 +5,7 @@ import { NEWS_DATABASE, CARD_STATUS } from '../data/newsDatabase';
  * 新聞卡片遊戲邏輯 Hook
  * 處理新聞卡片的生成、位置和旋轉
  */
-export function useCardsGame(started = true) {
+export function useCardsGame(started = true, onStatsChange = () => {}) {
 	const [newsCards, setNewsCards] = useState([]);
 	const [verifyingCard, setVerifyingCard] = useState(false);
 	const verifyingCardRef = useRef(false);
@@ -16,9 +16,11 @@ export function useCardsGame(started = true) {
 	}, [verifyingCard]);
 
 	const handleVerifyCard = (news) => {
-		//將欲查證的卡片狀態設為 verifying，其他卡片狀態設為 disabled
-
+		// 只要使用者點擊查證，立即增加社會信任度 +20
 		if (!news.isVerified) {
+			onStatsChange({ trustDelta: 20, fansDelta: 0 });
+
+			//將欲查證的卡片狀態設為 verifying，其他卡片狀態設為 disabled
 			setVerifyingCard(true);
 			setNewsCards((prev) => {
 				return prev.map((card) => {
@@ -54,9 +56,59 @@ export function useCardsGame(started = true) {
 		}
 	};
 
-	const handleShareCard = (news) => {
+	const handleShareCard = (news, titleIndex = 0) => {
+		// 計分規則（依 user 指定）
+		// titleIndex: 0 = 超級聳動, 1 = 一般聳動, 2 = 平鋪直敘
+		let fansDelta = 0;
+		let trustDelta = 0;
+		const isReal = !!news.isReal;
+		switch (titleIndex) {
+			case 0: // 超級聳動
+				if (!isReal) {
+					fansDelta = 100;
+					trustDelta = -60;
+				} else {
+					fansDelta = 80;
+					trustDelta = -20;
+				}
+				break;
+			case 1: // 一般聳動
+				if (!isReal) {
+					fansDelta = 80;
+					trustDelta = -40;
+				} else {
+					fansDelta = 60;
+					trustDelta = 0;
+				}
+				break;
+			case 2: // 平鋪直敘
+				if (!isReal) {
+					fansDelta = 60;
+					trustDelta = -20;
+				} else {
+					fansDelta = 40;
+					trustDelta = 20;
+				}
+				break;
+			default:
+				// 若沒有指定 index，當作一般聳動
+				if (!isReal) {
+					fansDelta = 80;
+					trustDelta = -40;
+				} else {
+					fansDelta = 60;
+					trustDelta = 0;
+				}
+		}
+
+		// 回報分數/變動給呼叫者 (GameScreen)
+		onStatsChange({ trustDelta, fansDelta });
+
+		// 最後移除被分享的卡片
 		setNewsCards((prev) => prev.filter((card) => card.id !== news.id));
 	};
+
+	
 	useEffect(() => {
 		if (!started) return;
 		const timer = setInterval(() => {

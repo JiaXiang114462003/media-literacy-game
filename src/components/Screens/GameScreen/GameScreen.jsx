@@ -14,17 +14,35 @@ import { useCardsGame } from '../../../hooks/useCardsGame';
  */
 export default function GameScreen({
 	round = 1,
-	initialTrust = 0, // 公眾信任度 (0-100)
+	initialTrust = 0, // 公眾信任度
+	initialFans = 50, // 粉絲數
 	initialTime = 60, // 秒
 	onTimeUp = () => {},
 }) {
 	const [trust, setTrust] = useState(initialTrust);
 	const [seconds, setSeconds] = useState(initialTime);
 
-	const { newsCards, handleVerifyCard, handleShareCard } = useCardsGame();
+	// 初始粉絲數由 prop 決定（多回合時會帶入上一回合的結束值）
+	const [fans, setFans] = useState(() => initialFans);
+
+	// 傳入 onStatsChange callback 以便 hook 在分享/查證時回報變化
+	// 注意：不再把 trust/fans 限制在 0-100，top 的顯示會直接反映原始數值；
+	// 下方 bar 的視覺仍使用百分比（在本檔中會對 trust 取 0-100 範圍）
+	const { newsCards, handleVerifyCard, handleShareCard } = useCardsGame(
+		true,
+		({ trustDelta = 0, fansDelta = 0 } = {}) => {
+			if (trustDelta) {
+				setTrust((t) => t + trustDelta);
+			}
+			if (fansDelta) {
+				setFans((f) => f + fansDelta);
+			}
+		}
+	);
 
 	// 當前需求：紅色區域等於 100 - trust
-	const fans = Math.max(0, Math.min(100, 100 - trust));
+	// 顯示為百分比用於 bar（clamp 到 0-100），但傳給 Layout 的 fans 為原始累積數值
+	const fansPercent = Math.max(0, Math.min(100, Math.round(fans)));
 
 	useEffect(() => {
 		// 簡易倒數計時器
@@ -33,18 +51,33 @@ export default function GameScreen({
 		return () => clearInterval(t);
 	}, [seconds]);
 
-	// 當倒數到 0 時，通知父層切換畫面並傳遞當前 trust 值
+	// 當倒數到 0 時，通知父層切換畫面並傳遞當前 trust 與 fans 值
 	useEffect(() => {
 		if (seconds === 0) {
-			onTimeUp(trust);
+			onTimeUp(trust, fans);
 		}
-	}, [seconds, trust, onTimeUp]);
+	}, [seconds, trust, fans, onTimeUp]);
 
-	// 計算動態漸層背景（根據 trust）
-	// 左側（trust）從 #52A6FF 漸變到 #9FCFFF，右側（fans）從 #FF5A89 漸變到 #FFB5CA
-	// 在 trustPercent 位置做明顯交界：左邊為 #9FCFFF，右邊為 #FFB5CA
-	const trustPercent = Math.max(0, Math.min(100, trust));
-	const barBackground = `linear-gradient(90deg, #52A6FF 0%, #9FCFFF ${trustPercent}%, #FFB5CA ${trustPercent}%, #FF5A89 100%)`;
+	// 計算動態漸層背景（根據 trust 和 fans）
+	// trust < 0 時：整條 bar 用粉紅四段漸層
+	// trust >= 0 時：分界點 = trust / (trust + fans) 的百分比；都為 0 時預設各半（50%）
+	let barBackground;
+	if (trust < 0) {
+		// trust 為負，整條 bar 用粉紅四段漸層（全粉紅）
+		barBackground = `linear-gradient(90deg, #FF467B 0%, #FFB5CA 50%, #FFB5CA 50%, #FF467B 100%)`;
+	} else {
+		// trust >= 0：計算分界點
+		const total = trust + fans;
+		let trustPercent;
+		if (total === 0) {
+			// 都為 0 時，預設各半
+			trustPercent = 50;
+		} else {
+			trustPercent = Math.round((trust / total) * 100);
+		}
+		// 左邊藍色（0% 到 trustPercent%），右邊粉紅色（trustPercent% 到 100%）
+		barBackground = `linear-gradient(90deg, #52A6FF 0%, #9FCFFF ${trustPercent}%, #FFB5CA ${trustPercent}%, #FF467B 100%)`;
+	}
 	const barStyle = {
 		background: barBackground,
 		transition: 'background 400ms ease',

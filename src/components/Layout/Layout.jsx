@@ -1,6 +1,7 @@
 import React from 'react';
 import './Layout.css';
 import titleIcon from '../../assets/TitleIcon.svg';
+import negativeIcon from '../../assets/explode.png';
 
 // Layout: topbar + center area placeholder
 export default function Layout({
@@ -26,18 +27,22 @@ export default function Layout({
 				<div className="bar-wrap">
 					<div className="bar-labels">
 						<div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-							<div
-								style={{
-									width: 10,
-									height: 10,
-									borderRadius: 3,
-									background: '#52A6FF',
-								}}
-							/>
-							<div>公眾信任度 {trust}%</div>
+							{trust < 0 ? (
+								<img src={negativeIcon} alt="negative" className="trust-icon" />
+							) : (
+								<div
+									style={{
+										width: 10,
+										height: 10,
+										borderRadius: 3,
+										background: '#52A6FF',
+									}}
+								/>
+							)}
+							<div style={{ color: '#799DDF' }}>公眾信任度 {trust}</div>
 						</div>
 						<div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-							<div>{fans}% 平台粉絲數</div>
+							<div style={{ color: '#799DDF' }}>{fans} 平台粉絲數</div>
 							<div
 								style={{
 									width: 10,

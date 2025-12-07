@@ -4,7 +4,6 @@
 
 .result-panel {
 	max-width: 900px;
-	margin: 40px auto 0;
 	padding: 36px 40px 48px;
 	background: rgba(255, 255, 255, 0.03);
 	border-radius: 14px;
@@ -30,6 +29,14 @@
 	margin-bottom: 36px;
 }
 
+.left {
+	color: rgb(82, 166, 255);
+}
+
+.right {
+	color: rgb(255, 70, 123);
+}
+
 .result-card {
 	background: rgba(255, 255, 255, 0.02);
 	padding: 28px 36px;
@@ -39,7 +46,6 @@
 }
 
 .card-label {
-	color: #d7a0c2;
 	font-size: 12px;
 	margin-bottom: 12px;
 }
