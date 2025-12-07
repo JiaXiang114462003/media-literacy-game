@@ -108,45 +108,60 @@ export function useCardsGame(started = true, onStatsChange = () => {}) {
 		setNewsCards((prev) => prev.filter((card) => card.id !== news.id));
 	};
 
-	
+	// 生成新卡片的函式
+	const spawnCard = () => {
+		const randomNews =
+			NEWS_DATABASE[Math.floor(Math.random() * NEWS_DATABASE.length)];
+
+		// 安全區域：topbar 高度約 80px，卡片高度 212px，倒計時器區域在右下
+		const topbarHeight = 80;
+		const cardHeight = 212;
+		const cardWidth = 442;
+		const countdownSize = 120;
+		const padding = 20;
+
+		const maxTop = Math.max(
+			topbarHeight,
+			window.innerHeight - cardHeight - countdownSize - padding
+		);
+		const minTop = topbarHeight + padding;
+		const maxLeft = Math.max(
+			0,
+			window.innerWidth - cardWidth - countdownSize - padding
+		);
+		const minLeft = padding;
+
+		const newCard = {
+			...randomNews,
+			status: verifyingCardRef.current
+				? CARD_STATUS.disabled
+				: CARD_STATUS.default,
+			id: Date.now() + Math.random(),
+			top: Math.random() * (maxTop - minTop) + minTop,
+			left: Math.random() * (maxLeft - minLeft) + minLeft,
+			rotation: Math.random() * 30 - 15,
+			createdAt: new Date(),
+		};
+		setNewsCards((prev) => [...prev, newCard]);
+	};
+
 	useEffect(() => {
 		if (!started) return;
+
+		// 第一張卡片 0.5 秒後出現
+		const firstCardTimer = setTimeout(() => {
+			spawnCard();
+		}, 500);
+
+		// 之後每 3 秒出現一張卡片
 		const timer = setInterval(() => {
-			const randomNews =
-				NEWS_DATABASE[Math.floor(Math.random() * NEWS_DATABASE.length)];
-
-			// 安全區域：topbar 高度約 80px，卡片高度 212px，倒計時器區域在右下
-			const topbarHeight = 80;
-			const cardHeight = 212;
-			const cardWidth = 442;
-			const countdownSize = 120;
-			const padding = 20;
-
-			const maxTop = Math.max(
-				topbarHeight,
-				window.innerHeight - cardHeight - countdownSize - padding
-			);
-			const minTop = topbarHeight + padding;
-			const maxLeft = Math.max(
-				0,
-				window.innerWidth - cardWidth - countdownSize - padding
-			);
-			const minLeft = padding;
-
-			const newCard = {
-				...randomNews,
-				status: verifyingCardRef.current
-					? CARD_STATUS.disabled
-					: CARD_STATUS.default,
-				id: Date.now() + Math.random(),
-				top: Math.random() * (maxTop - minTop) + minTop,
-				left: Math.random() * (maxLeft - minLeft) + minLeft,
-				rotation: Math.random() * 30 - 15,
-				createdAt: new Date(),
-			};
-			setNewsCards((prev) => [...prev, newCard]);
+			spawnCard();
 		}, 3000);
-		return () => clearInterval(timer);
+
+		return () => {
+			clearTimeout(firstCardTimer);
+			clearInterval(timer);
+		};
 	}, [started]);
 
 	return {
