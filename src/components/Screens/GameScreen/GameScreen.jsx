@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import '../../Layout/Layout.css';
 import './GameScreen.css';
 import Layout from '../../Layout/Layout';
+import NewsCard from '../../Game/NewsCard';
+import { useCardsGame } from '../../../hooks/useCardsGame';
 
 /**
  * GameScreen
@@ -18,6 +20,8 @@ export default function GameScreen({
 }) {
 	const [trust, setTrust] = useState(initialTrust);
 	const [seconds, setSeconds] = useState(initialTime);
+
+	const { newsCards, handleVerifyCard, handleShareCard } = useCardsGame();
 
 	// 當前需求：紅色區域等於 100 - trust
 	const fans = Math.max(0, Math.min(100, 100 - trust));
@@ -63,8 +67,20 @@ export default function GameScreen({
 	return (
 		<div className="game-screen">
 			<Layout round={round} trust={trust} fans={fans} barStyle={barStyle}>
-				{/* 這裡插入 NewsCard（其他人會實作），暫留 placeholder */}
-				<div className="news-placeholder" />
+				{/* 新聞卡片容器：使用 hook 產生的 newsCards 動態渲染 */}
+				<div style={{ position: 'relative', width: '100%', height: '100%' }}>
+					{newsCards.map((news) => (
+						<NewsCard
+							key={news.id}
+							news={news}
+							top={news.top}
+							left={news.left}
+							rotation={news.rotation}
+							handleVerifyCard={handleVerifyCard}
+							handleShareCard={handleShareCard}
+						/>
+					))}
+				</div>
 			</Layout>
 
 			{/* 右下倒數圓形 */}

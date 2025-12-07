@@ -32,7 +32,7 @@ export default function ResultScreen({
 					{/* 根據回合顯示：Round1 顯示階段完成文字；Round2+ 顯示稱號 */}
 					{(function renderSubtitle() {
 						if (round === 1) {
-							return <p className="result-sub">第一階段數據已擷取。</p>;
+							return <p className="result-sub">第一階段已完成</p>;
 						}
 						const diff = trust - fans; // 正值代表 trust 較高
 						let title = '雜訊煉金師';

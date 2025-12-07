@@ -14,7 +14,7 @@ function App() {
 				<GameScreen
 					round={round}
 					initialTrust={trust}
-					initialTime={10}
+					initialTime={60}
 					onTimeUp={(finalTrust) => {
 						// 存下遊戲結束時的 trust 值，確保 ResultScreen 顯示一致
 						setTrust(typeof finalTrust === 'number' ? finalTrust : trust);
