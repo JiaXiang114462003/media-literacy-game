@@ -146,7 +146,7 @@ export default function NewsCard({
 									: ''
 							}`}
 							style={{
-								maxWidth: '197px',
+								maxWidth: news.isVerified ? '100%' : '197px',
 								paddingTop: '4px',
 								paddingBottom: '4px',
 								width: '100%',
@@ -174,52 +174,53 @@ export default function NewsCard({
 							<img src={share} alt="share" />
 							<div>分享</div>
 						</div>
-						<div
-							className={`verify-btn ${
-								news.status === CARD_STATUS.verifying ? 'disabled' : ''
-							}`}
-							style={{
-								maxWidth: '197px',
-								width: '100%',
-								paddingTop: '4px',
-								paddingBottom: '4px',
-								fontSize: '14px',
-								borderRadius: '5px',
-								lineHeight: '150%',
-								textAlign: 'center',
-								display: 'flex',
-								alignItems: 'center',
-								justifyContent: 'center',
-								gap: '4px',
-							}}
-							onClick={() => {
-								handleVerifyCard(news);
-							}}
-						>
-							{!news.isVerified &&
-							(news.status === CARD_STATUS.default ||
-								news.status === CARD_STATUS.disabled) ? (
-								<img src={verify} alt="verify" />
-							) : null}
-							{news.status === CARD_STATUS.verifying ? (
-								<img className="loading-btn" src={loading} alt="loading" />
-							) : null}
-							{news.isVerified && news.isReal ? (
-								<img src={close} alt="close" />
-							) : null}
+						{!news.isVerified && (
 							<div
+								className={`verify-btn ${
+									news.status === CARD_STATUS.verifying ? 'disabled' : ''
+								}`}
+								style={{
+									maxWidth: '197px',
+									width: '100%',
+									paddingTop: '4px',
+									paddingBottom: '4px',
+									fontSize: '14px',
+									borderRadius: '5px',
+									lineHeight: '150%',
+									textAlign: 'center',
+									display: 'flex',
+									alignItems: 'center',
+									justifyContent: 'center',
+									gap: '4px',
+								}}
 								onClick={() => {
 									handleVerifyCard(news);
 								}}
 							>
-								{news.isVerified ? '忽略' : null}
-								{news.status === CARD_STATUS.verifying && '查證中'}
 								{!news.isVerified &&
-									(news.status === CARD_STATUS.default ||
-										news.status === CARD_STATUS.disabled) &&
-									'查證'}
+								(news.status === CARD_STATUS.default ||
+									news.status === CARD_STATUS.disabled) ? (
+									<img src={verify} alt="verify" />
+								) : null}
+								{news.status === CARD_STATUS.verifying ? (
+									<img className="loading-btn" src={loading} alt="loading" />
+								) : null}
+								{news.isVerified && news.isReal ? (
+									<img src={close} alt="close" />
+								) : null}
+								<div
+									onClick={() => {
+										handleVerifyCard(news);
+									}}
+								>
+									{news.status === CARD_STATUS.verifying && '查證中'}
+									{!news.isVerified &&
+										(news.status === CARD_STATUS.default ||
+											news.status === CARD_STATUS.disabled) &&
+										'查證'}
+								</div>
 							</div>
-						</div>
+						)}
 					</div>
 				)}
 			</div>
