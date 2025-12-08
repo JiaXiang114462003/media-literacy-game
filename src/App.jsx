@@ -2,6 +2,7 @@ import { useState } from 'react';
 import GameScreen from './components/Screens/GameScreen/GameScreen';
 import ResultScreen from './components/Screens/ResultScreen/ResultScreen';
 import MainMenu from './components/Screens/MainMenu';
+import { useSound } from './hooks/useSound';
 
 function App() {
 	// 初始值：trust 與 fans 都從 0 開始
@@ -10,11 +11,16 @@ function App() {
 	const [trust, setTrust] = useState(initialTrust);
 	const [fans, setFans] = useState(0);
 	const [round, setRound] = useState(1);
+
+	// 音效系統
+	const { sounds, bgm } = useSound(true);
+
 	return (
 		<>
 			{screen === 'menu' && (
                 <MainMenu 
                     onStartGame={() => {
+                        sounds.buttonClick();
                         setScreen('game');
                     }} 
                 />
@@ -25,7 +31,11 @@ function App() {
 					initialTrust={trust}
 					initialFans={fans}
 					initialTime={30}
+					sounds={sounds}
+					bgm={bgm}
 					onTimeUp={(finalTrust, finalFans) => {
+						// 停止所有音效
+						sounds.stopAll();
 						// 存下遊戲結束時的 trust 與 fans 值，確保 ResultScreen 顯示一致
 						setTrust(typeof finalTrust === 'number' ? finalTrust : trust);
 						setFans(typeof finalFans === 'number' ? finalFans : fans);
@@ -38,7 +48,9 @@ function App() {
 					round={round}
 					trust={trust}
 					fans={fans}
+					bgm={bgm}
 					onNext={() => {
+						sounds.buttonClick();
 						// 按下結果頁的按鈕：若目前回合小於 2，進入下一回合；否則重開回合 1
 						if (round < 2) {
 							setRound((r) => r + 1);
