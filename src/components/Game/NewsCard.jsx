@@ -13,6 +13,7 @@ import { CARD_STATUS } from '../../data/newsDatabase';
  * @param {number} top - 距離頂部的距離（px）
  * @param {number} left - 距離左側的距離（px）
  * @param {number} rotation - 旋轉角度（度，-15 到 15）
+ * @param {Object} sounds - 音效物件
  */
 export default function NewsCard({
 	news,
@@ -21,6 +22,7 @@ export default function NewsCard({
 	rotation = 0,
 	handleVerifyCard,
 	handleShareCard,
+	sounds = {},
 }) {
 	const [isHovered, setIsHovered] = useState(false);
 	const [isOpen, setIsOpen] = useState(false);
@@ -166,6 +168,7 @@ export default function NewsCard({
 									news.status === CARD_STATUS.default ||
 									(news.isVerified && news.isReal)
 								) {
+									if (sounds.share) sounds.share();
 									setIsOpen(true);
 									setSelectedTitleIndex(null);
 								}
@@ -193,6 +196,8 @@ export default function NewsCard({
 								gap: '4px',
 							}}
 							onClick={() => {
+								// 只有在尚未查證時才播放查證音效
+								if (!news.isVerified && sounds.verify) sounds.verify();
 								handleVerifyCard(news);
 							}}
 						>

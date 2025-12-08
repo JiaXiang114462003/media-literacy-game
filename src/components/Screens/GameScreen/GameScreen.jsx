@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import '../../Layout/Layout.css';
 import './GameScreen.css';
 import Layout from '../../Layout/Layout';
@@ -18,12 +18,28 @@ export default function GameScreen({
 	initialFans = 50, // 粉絲數
 	initialTime = 60, // 秒
 	onTimeUp = () => {},
+	sounds = {},      // 音效
+	bgm = {},         // 背景音樂
 }) {
 	const [trust, setTrust] = useState(initialTrust);
 	const [seconds, setSeconds] = useState(initialTime);
+	const prevCardsCount = useRef(0); // 追蹤卡片數量以播放新卡片音效
+	const countdownPlayed = useRef(false); // 追蹤是否已播放倒數音效
 
 	// 初始粉絲數由 prop 決定（多回合時會帶入上一回合的結束值）
 	const [fans, setFans] = useState(() => initialFans);
+
+	// 開始遊戲時播放 BGM
+	useEffect(() => {
+		if (bgm.game) {
+			bgm.game();
+		}
+		return () => {
+			if (bgm.stop) {
+				bgm.stop();
+			}
+		};
+	}, []);
 
 	// 傳入 onStatsChange callback 以便 hook 在分享/查證時回報變化
 	// 注意：不再把 trust/fans 限制在 0-100，top 的顯示會直接反映原始數值；
@@ -37,8 +53,34 @@ export default function GameScreen({
 			if (fansDelta) {
 				setFans((f) => f + fansDelta);
 			}
+		},
+		{
+			// 查證結果音效回調
+			onVerifyResult: (isReal) => {
+				if (isReal && sounds.verifySuccess) {
+					sounds.verifySuccess();
+				} else if (!isReal && sounds.verifyFail) {
+					sounds.verifyFail();
+				}
+			}
 		}
 	);
+
+	// 新卡片出現時播放音效
+	useEffect(() => {
+		if (newsCards.length > prevCardsCount.current && sounds.cardAppear) {
+			sounds.cardAppear();
+		}
+		prevCardsCount.current = newsCards.length;
+	}, [newsCards.length]);
+
+	// 倒數最後 10 秒播放警告音效
+	useEffect(() => {
+		if (seconds === 10 && !countdownPlayed.current && sounds.countdown) {
+			sounds.countdown();
+			countdownPlayed.current = true;
+		}
+	}, [seconds]);
 
 	// 當前需求：紅色區域等於 100 - trust
 	// 顯示為百分比用於 bar（clamp 到 0-100），但傳給 Layout 的 fans 為原始累積數值
@@ -111,6 +153,7 @@ export default function GameScreen({
 							rotation={news.rotation}
 							handleVerifyCard={handleVerifyCard}
 							handleShareCard={handleShareCard}
+							sounds={sounds}
 						/>
 					))}
 				</div>

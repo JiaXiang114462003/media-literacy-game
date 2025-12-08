@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import '../../Layout/Layout.css';
 import './ResultScreen.css';
 import Layout from '../../Layout/Layout';
@@ -8,7 +8,20 @@ export default function ResultScreen({
 	trust = 0,
 	fans = 0,
 	onNext = () => {},
+	bgm = {},
 }) {
+	// 結果畫面播放 BGM
+	useEffect(() => {
+		if (bgm.result) {
+			bgm.result();
+		}
+		return () => {
+			if (bgm.stop) {
+				bgm.stop();
+			}
+		};
+	}, []);
+
 	// 計算動態漸層背景（根據 trust 和 fans）
 	// trust < 0 時：整條 bar 用粉紅色
 	// trust >= 0 時：分界點 = trust / (trust + fans) 的百分比；都為 0 時預設各半（50%）

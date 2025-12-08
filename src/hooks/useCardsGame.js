@@ -4,16 +4,28 @@ import { NEWS_DATABASE, CARD_STATUS } from '../data/newsDatabase';
 /**
  * 新聞卡片遊戲邏輯 Hook
  * 處理新聞卡片的生成、位置和旋轉
+ * @param {boolean} started - 是否開始遊戲
+ * @param {Function} onStatsChange - 分數變化回調
+ * @param {Object} onSoundEvent - 音效事件回調 { onVerifyResult: (isReal) => void }
  */
-export function useCardsGame(started = true, onStatsChange = () => {}) {
+export function useCardsGame(started = true, onStatsChange = () => {}, onSoundEvent = {}) {
 	const [newsCards, setNewsCards] = useState([]);
 	const [verifyingCard, setVerifyingCard] = useState(false);
 	const verifyingCardRef = useRef(false);
+	const isGameEndedRef = useRef(false); // 追蹤遊戲是否已結束
 
 	// 同步 ref 和 state
 	useEffect(() => {
 		verifyingCardRef.current = verifyingCard;
 	}, [verifyingCard]);
+
+	// 元件卸載時標記遊戲已結束
+	useEffect(() => {
+		isGameEndedRef.current = false;
+		return () => {
+			isGameEndedRef.current = true;
+		};
+	}, []);
 
 	const handleVerifyCard = (news) => {
 		// 只要使用者點擊查證，立即增加社會信任度 +20
@@ -33,7 +45,16 @@ export function useCardsGame(started = true, onStatsChange = () => {}) {
 
 			//5秒後，將欲查證的卡片狀態設為 true 或 false，其他卡片狀態設為 default
 			setTimeout(() => {
+				// 如果遊戲已結束，不執行任何操作
+				if (isGameEndedRef.current) return;
+
 				setVerifyingCard(false);
+				
+				// 播放查證結果音效（只在遊戲進行中播放）
+				if (onSoundEvent.onVerifyResult) {
+					onSoundEvent.onVerifyResult(news.isReal);
+				}
+
 				setNewsCards((prev) => {
 					return prev.map((card) => {
 						if (card.id === news.id) {
