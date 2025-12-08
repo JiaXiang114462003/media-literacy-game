@@ -1,0 +1,336 @@
+/* MainMenu.css */
+
+/* === 主容器設定 === */
+.main-menu {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    max-height: 100vh;
+    background: #0b1220;
+    position: relative;
+    color: #fff;
+    font-family: 'Inter', Arial, sans-serif;
+    padding: 2rem;
+    overflow: hidden; 
+    box-sizing: border-box;
+}
+
+/* 內容限制寬度與格線佈局 */
+.content-wrapper {
+    max-width: 1200px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr; 
+    gap: 4rem;
+    align-items: center;
+    z-index: 10;
+}
+
+/* === 左側文字區塊 === */
+.left-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.game-title {
+    font-size: 4rem; /* 大標題 */
+    font-weight: 900;
+    line-height: 1.1;
+    margin: 0;
+    /* 藍粉漸層文字 */
+    background: linear-gradient(90deg, #52A6FF 0%, #FF467B 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.3));
+}
+
+.game-subtitle {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0;
+    letter-spacing: 0.1em;
+}
+
+.game-description {
+    color: #d1d5db; 
+    font-size: 0.9rem;
+    line-height: 1.8;
+    text-align: justify;
+    max-width: 500px;
+}
+
+/* 開始按鈕 */
+.start-button {
+    margin-top: 1rem;
+    padding: 1rem 3rem;
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: #0b1220;
+    background-color: white;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    align-self: flex-start;
+    
+    /* 按鈕陰影與立體感 */
+    box-shadow: 0 4px 0 #b0b0b0, 0 10px 20px rgba(0,0,0,0.2);
+    transition: all 0.1s ease-out;
+}
+
+.start-button:hover {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #b0b0b0, 0 5px 10px rgba(0,0,0,0.2);
+}
+
+.start-button:active {
+    transform: translateY(4px);
+    box-shadow: none;
+}
+
+/* === 右側卡片堆疊區塊 === */
+.right-section {
+    position: relative;
+    height: 600px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    perspective: 1000px; /* 3D 透視感 */
+}
+
+/* 卡片共用樣式 */
+.social-card {
+    position: absolute;
+    width: 442px;
+    height: 212px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    border: 4px solid transparent;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    transition: all 0.5s ease-out;
+}
+
+/* 卡片頭部 */
+.card-header {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 16px;
+}
+
+.user-avatar {
+    width: 33.33px;
+    height: 33.33px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-info h4 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 150%;
+    color: #000000;
+}
+
+.user-info span {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 150%;
+    color: #333333;
+}
+
+/* 卡片內容 */
+.card-content p {
+    font-size: 16px;
+    line-height: 150%;
+    color: #000000;
+    margin: 0;
+}
+
+/* 卡片按鈕群 */
+.card-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+}
+
+.action-btn {
+    max-width: 197px;
+    width: 100%;
+    padding: 4px 0;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 150%;
+    border-radius: 5px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.action-btn.share {
+    background-color: #2461e6;
+    color: #fff;
+}
+
+.action-btn.share:hover {
+    background-color: #1545b0;
+}
+
+.action-btn.verify {
+    background-color: #fff;
+    outline: 1px solid #d6d6d6;
+    color: #464646;
+}
+
+.action-btn.verify:hover {
+    background-color: #e3e3e3;
+}
+
+.btn-icon {
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+}
+
+/* === 卡片個別定位 === */
+
+/* 卡片掉落動畫 */
+@keyframes cardDropMain {
+    0% {
+        opacity: 0;
+        transform: translateY(-600px) rotate(0deg) scale(0.8);
+    }
+    70% {
+        opacity: 1;
+        transform: translateY(20px) rotate(-14.18deg) scale(1.02);
+    }
+    85% {
+        transform: translateY(-10px) rotate(-14.18deg) scale(0.98);
+    }
+    100% {
+        opacity: 1;
+        transform: rotate(-14.18deg) scale(1);
+    }
+}
+
+@keyframes cardDropBg1 {
+    0% {
+        opacity: 0;
+        transform: translate(50px, -700px) rotate(0deg) scale(0.8);
+    }
+    70% {
+        opacity: 0.6;
+        transform: translate(50px, -80px) rotate(15.141deg) scale(0.97);
+    }
+    85% {
+        transform: translate(50px, -110px) rotate(15.141deg) scale(0.93);
+    }
+    100% {
+        opacity: 0.6;
+        transform: translate(50px, -100px) rotate(15.141deg) scale(0.95);
+    }
+}
+
+@keyframes cardDropBg2 {
+    0% {
+        opacity: 0;
+        transform: translate(20px, -500px) rotate(0deg) scale(0.8);
+    }
+    70% {
+        opacity: 0.5;
+        transform: translate(20px, 140px) rotate(0.218deg) scale(0.97);
+    }
+    85% {
+        transform: translate(20px, 110px) rotate(0.218deg) scale(0.93);
+    }
+    100% {
+        opacity: 0.5;
+        transform: translate(20px, 120px) rotate(0.218deg) scale(0.95);
+    }
+}
+
+/* 動畫進行中的狀態 */
+.social-card.animating {
+    pointer-events: none; /* 動畫期間禁用互動 */
+}
+
+.social-card.card-main.animating {
+    animation: cardDropMain 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s forwards;
+}
+
+.social-card.card-bg-1.animating {
+    animation: cardDropBg1 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0s forwards;
+}
+
+.social-card.card-bg-2.animating {
+    animation: cardDropBg2 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.4s forwards;
+}
+
+/* 卡片 1: 中間主要卡片 */
+.social-card.card-main {
+    z-index: 10;
+    transform: rotate(-14.18deg) scale(1);
+}
+.social-card.card-main:hover {
+    transform: rotate(0deg) scale(1.05); /* 滑鼠懸停特效 */
+    z-index: 20;
+}
+
+/* 卡片 2: 右上背景 */
+.social-card.card-bg-1 {
+    z-index: 5;
+    transform: translate(50px, -100px) rotate(15.141deg) scale(0.95);
+    opacity: 0.6;
+    filter: blur(1px);
+}
+
+/* 卡片 3: 右下背景 */
+.social-card.card-bg-2 {
+    z-index: 4;
+    transform: translate(20px, 140px) rotate(0.218deg) scale(0.95);
+    opacity: 0.5;
+    filter: blur(2px);
+}
+
+/* RWD: 手機版調整 */
+@media (max-width: 1024px) {
+    .content-wrapper {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+    
+    .left-section {
+        align-items: center;
+    }
+    
+    .start-button {
+        align-self: center;
+    }
+    
+    .game-title {
+        font-size: 3.5rem;
+    }
+    
+    .right-section {
+        height: 400px;
+        transform: scale(0.8);
+    }
+}

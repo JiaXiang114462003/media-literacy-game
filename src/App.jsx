@@ -1,16 +1,24 @@
 import { useState } from 'react';
 import GameScreen from './components/Screens/GameScreen/GameScreen';
 import ResultScreen from './components/Screens/ResultScreen/ResultScreen';
+import MainMenu from './components/Screens/MainMenu';
 
 function App() {
 	// 初始值：trust 與 fans 都從 0 開始
 	const initialTrust = 0;
-	const [screen, setScreen] = useState('game');
+	const [screen, setScreen] = useState('menu');
 	const [trust, setTrust] = useState(initialTrust);
 	const [fans, setFans] = useState(0);
 	const [round, setRound] = useState(1);
 	return (
 		<>
+			{screen === 'menu' && (
+                <MainMenu 
+                    onStartGame={() => {
+                        setScreen('game');
+                    }} 
+                />
+            )}
 			{screen === 'game' && (
 				<GameScreen
 					round={round}
