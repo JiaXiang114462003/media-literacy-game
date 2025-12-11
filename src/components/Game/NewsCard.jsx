@@ -38,7 +38,7 @@ export default function NewsCard({
           top: `${top}px`,
           left: `${left}px`,
           width: "442px",
-          height: "212px",
+          height: "auto",
           padding: "20px",
           display: "flex",
           flexDirection: "column",

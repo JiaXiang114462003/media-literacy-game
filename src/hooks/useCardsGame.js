@@ -1,6 +1,16 @@
 import { useState, useEffect, useRef } from "react";
 import { NEWS_DATABASE, CARD_STATUS } from "../data/newsDatabase";
 
+// 模組級別的變數，用於在整個應用生命週期中保持索引
+let globalNewsIndex = 0;
+
+/**
+ * 重置新聞索引（用於完全重新開始遊戲時）
+ */
+export function resetNewsIndex() {
+  globalNewsIndex = 0;
+}
+
 /**
  * 新聞卡片遊戲邏輯 Hook
  * 處理新聞卡片的生成、位置和旋轉
@@ -155,8 +165,16 @@ export function useCardsGame(
 
   // 生成新卡片的函式
   const spawnCard = () => {
-    const randomNews =
-      NEWS_DATABASE[Math.floor(Math.random() * NEWS_DATABASE.length)];
+    // 如果已經到達資料庫末尾，循環回到開頭
+    if (globalNewsIndex >= NEWS_DATABASE.length) {
+      globalNewsIndex = 0;
+    }
+
+    // 按照順序獲取新聞
+    const currentNews = NEWS_DATABASE[globalNewsIndex];
+
+    // 增加索引，為下一張卡片做準備
+    globalNewsIndex++;
 
     // 安全區域：topbar 高度約 80px，卡片高度 212px，倒計時器區域在右下
     const topbarHeight = 80;
@@ -177,7 +195,7 @@ export function useCardsGame(
     const minLeft = padding;
 
     const newCard = {
-      ...randomNews,
+      ...currentNews,
       status: verifyingCardRef.current
         ? CARD_STATUS.disabled
         : CARD_STATUS.default,
@@ -206,7 +224,7 @@ export function useCardsGame(
 
       // 從定時器 Map 中移除
       cardTimersRef.current.delete(newCard.id);
-    }, 10000); // 10 秒
+    }, 15000); // 10 秒
 
     // 將定時器 ID 存儲到 Map 中
     cardTimersRef.current.set(newCard.id, timerId);
