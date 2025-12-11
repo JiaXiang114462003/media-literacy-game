@@ -7,6 +7,7 @@ export const CARD_STATUS = {
   default: "default",
   verifying: "verifying",
   disabled: "disabled",
+  fading: "fading",
 };
 
 //titleIndex: 0 = 超級聳動, 1 = 一般聳動, 2 = 平鋪直敘

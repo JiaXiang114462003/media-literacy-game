@@ -55,9 +55,22 @@ export default function NewsCard({
               ? "0px 0px 20px 0px #FFD865"
               : "none",
           filter: news.status === CARD_STATUS.disabled ? "blur(1.5px)" : "none",
-          pointerEvents: news.status === CARD_STATUS.disabled ? "none" : "auto",
-          cursor: news.status === CARD_STATUS.disabled ? "default" : "pointer",
+          pointerEvents:
+            news.status === CARD_STATUS.disabled ||
+            news.status === CARD_STATUS.fading
+              ? "none"
+              : "auto",
+          cursor:
+            news.status === CARD_STATUS.disabled ||
+            news.status === CARD_STATUS.fading
+              ? "default"
+              : "pointer",
           transform: `rotate(${rotation}deg)`,
+          opacity: news.status === CARD_STATUS.fading ? 0 : 1,
+          transition:
+            news.status === CARD_STATUS.fading
+              ? "opacity 0.5s ease-out"
+              : "opacity 0.4s ease",
           zIndex: isHovered && zIndex < 1000 ? 1000 : zIndex,
         }}
         onMouseEnter={() => setIsHovered(true)}

@@ -79,11 +79,61 @@ export function useCardsGame(
         setNewsCards((prev) => {
           return prev.map((card) => {
             if (card.id === news.id) {
-              return {
-                ...card,
-                isVerified: true,
-                status: CARD_STATUS.default,
-              };
+              // 如果是假新聞，查證完成後先保持正常顯示，3秒後開始淡出
+              if (!news.isReal) {
+                // 查證完成，但先保持正常顯示
+                const updatedCard = {
+                  ...card,
+                  isVerified: true,
+                  status: CARD_STATUS.default,
+                };
+
+                // 2.5秒後才設置為淡出狀態
+                setTimeout(() => {
+                  if (isGameEndedRef.current) return;
+
+                  setNewsCards((prevCards) => {
+                    return prevCards.map((c) => {
+                      if (c.id === news.id) {
+                        return {
+                          ...c,
+                          status: CARD_STATUS.fading,
+                        };
+                      }
+                      return c;
+                    });
+                  });
+                }, 2500);
+
+                // 再等3秒後（總共5.5秒後）移除假新聞
+                const fadeRemoveTimerId = setTimeout(() => {
+                  if (isGameEndedRef.current) return;
+
+                  setNewsCards((prevCards) => {
+                    const cardStillExists = prevCards.some(
+                      (c) => c.id === news.id
+                    );
+                    if (cardStillExists) {
+                      return prevCards.filter((c) => c.id !== news.id);
+                    }
+                    return prevCards;
+                  });
+
+                  cardTimersRef.current.delete(news.id);
+                }, 3000);
+
+                // 將移除定時器 ID 存儲到 Map 中
+                cardTimersRef.current.set(news.id, fadeRemoveTimerId);
+
+                return updatedCard;
+              } else {
+                // 真新聞保持為 default 狀態
+                return {
+                  ...card,
+                  isVerified: true,
+                  status: CARD_STATUS.default,
+                };
+              }
             }
             return {
               ...card,
@@ -91,7 +141,7 @@ export function useCardsGame(
             };
           });
         });
-      }, 5000);
+      }, 3000);
     }
     if (news.isVerified && news.isReal) {
       // 清理該卡片的定時器
@@ -206,28 +256,6 @@ export function useCardsGame(
       createdAt: new Date(),
     };
     setNewsCards((prev) => [...prev, newCard]);
-
-    // 設置 10 秒後自動移除卡片
-    const timerId = setTimeout(() => {
-      // 如果遊戲已結束，不執行任何操作
-      if (isGameEndedRef.current) return;
-
-      // 移除卡片
-      setNewsCards((prev) => {
-        // 檢查卡片是否仍然存在（可能已經被手動移除）
-        const cardExists = prev.some((card) => card.id === newCard.id);
-        if (cardExists) {
-          return prev.filter((card) => card.id !== newCard.id);
-        }
-        return prev;
-      });
-
-      // 從定時器 Map 中移除
-      cardTimersRef.current.delete(newCard.id);
-    }, 15000); // 10 秒
-
-    // 將定時器 ID 存儲到 Map 中
-    cardTimersRef.current.set(newCard.id, timerId);
   };
 
   useEffect(() => {
