@@ -19,7 +19,7 @@ export default function Layout({
 						<img src={titleIcon} alt="Media Title Icon" />
 					</div>
 
-					<div className="media-title">Media Title</div>
+					<div className="media-title">Click or Check?</div>
 				</div>
 
 				<div className="round-label">ROUND {round}</div>
