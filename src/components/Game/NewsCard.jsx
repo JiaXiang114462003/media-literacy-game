@@ -227,11 +227,7 @@ export default function NewsCard({
                 {news.isVerified && news.isReal ? (
                   <img src={close} alt="close" />
                 ) : null}
-                <div
-                  onClick={() => {
-                    handleVerifyCard(news);
-                  }}
-                >
+                <div>
                   {news.status === CARD_STATUS.verifying && "查證中"}
                   {!news.isVerified &&
                     (news.status === CARD_STATUS.default ||
